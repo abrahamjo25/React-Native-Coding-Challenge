@@ -7,7 +7,6 @@ import {
   StyleSheet,
 } from "react-native";
 import TaskList from "./components/TaskList";
-import axios from "axios";
 const App = () => {
   const [task, setTask] = useState("");
   const [tasks, setTasks] = useState([]);
@@ -27,9 +26,7 @@ const App = () => {
       });
       const data = await response.json();
       setTasks(data);
-      console.log(data);
     } catch (error) {
-      console.log(error);
       throw error;
     }
   };

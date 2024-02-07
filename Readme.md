@@ -1,10 +1,9 @@
 clone the project
 
 open on command
-
+RUN npm install
 RUN npx expo start
 
-open an other cmd
+to test
 
-cd backend
-RUN node server.js
+RUN npm test

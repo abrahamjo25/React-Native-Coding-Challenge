@@ -8,44 +8,33 @@ import {
 } from "react-native";
 import TaskList from "./components/TaskList";
 const App = () => {
-  const [task, setTask] = useState("");
+  let todo = {
+    task: "",
+    createdAt: new Date().toISOString(),
+  };
+  const [todos, setTodos] = useState(todo);
   const [tasks, setTasks] = useState([]);
   const [editIndex, setEditIndex] = useState(-1);
-  useEffect(() => {
-    fetchTasks();
-  }, []);
 
-  const fetchTasks = async () => {
-    try {
-      const response = await fetch(`http://localhost:5000/todos`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          "Cache-Control": "no-cache",
-        },
-      });
-      const data = await response.json();
-      setTasks(data);
-    } catch (error) {
-      throw error;
-    }
-  };
   const handleAddTask = () => {
-    if (task) {
+    if (todos) {
       if (editIndex !== -1) {
         const updatedTasks = [...tasks];
-        updatedTasks[editIndex] = task;
+        updatedTasks[editIndex] = todos;
         setTasks(updatedTasks);
         setEditIndex(-1);
       } else {
-        setTasks([...tasks, task]);
+        setTasks([...tasks, todos]);
       }
-      setTask("");
+
+      setTodos(todo);
     }
   };
 
   const handleEditTask = (index) => {
-    setTask(tasks[index]);
+    console.log(index);
+    let task = tasks[index];
+    setTodos(task);
     setEditIndex(index);
   };
 
@@ -54,15 +43,19 @@ const App = () => {
     updatedTasks.splice(index, 1);
     setTasks(updatedTasks);
   };
-
+  const onChangeEvent = (text) => {
+    let _todos = { ...todos };
+    _todos["task"] = text;
+    setTodos(_todos);
+  };
   return (
     <View style={styles.container}>
       <Text style={styles.title}>React Native TODO</Text>
       <TextInput
         style={styles.input}
         placeholder="Enter task"
-        value={task}
-        onChangeText={(text) => setTask(text)}
+        value={todos?.task}
+        onChangeText={(text) => onChangeEvent(text)}
       />
       <TouchableOpacity style={styles.addButton} onPress={handleAddTask}>
         <Text style={styles.addButtonText}>

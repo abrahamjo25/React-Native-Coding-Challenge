@@ -1,19 +1,19 @@
 import React from "react";
-import { render, fireEvent } from "@testing-library/react-native";
+import { render, fireEvent, waitFor } from "@testing-library/react-native";
 import App from "../App";
 
 describe("App Component Tests", () => {
-  test("renders App component", () => {
+  test("renders App component", async () => {
     const { getByText, getByPlaceholderText } = render(<App />);
 
     expect(getByText("React Native TODO")).toBeTruthy();
     expect(getByPlaceholderText("Enter task")).toBeTruthy();
   });
 
-  test("handles adding a new task", () => {
+  test("handles adding a new task", async () => {
     const { getByText, getByPlaceholderText } = render(<App />);
 
-    // Input a task
+    // Input  task
     const input = getByPlaceholderText("Enter task");
     fireEvent.changeText(input, "New Test Task");
 
@@ -21,11 +21,11 @@ describe("App Component Tests", () => {
     const addButton = getByText("Add");
     fireEvent.press(addButton);
 
-    // Check if the new task is added
-    expect(getByText("New Test Task")).toBeTruthy();
+    // Wait for the asynchronous fetchTasks to complete
+    await waitFor(() => expect(getByText("New Test Task")).toBeTruthy());
   });
 
-  test("handles editing a task", () => {
+  test("handles editing a task", async () => {
     const { getByText, getByPlaceholderText } = render(<App />);
 
     // Input a task
@@ -36,15 +36,21 @@ describe("App Component Tests", () => {
     const addButton = getByText("Add");
     fireEvent.press(addButton);
 
+    // Wait for the asynchronous fetchTasks to complete
+    await waitFor(() => expect(getByText("New Test Task")).toBeTruthy());
+
     // Edit the task
-    const editButton = getByText("Update");
+    const editButton = getByText("Edit");
     fireEvent.press(editButton);
+
+    // Wait for the "Update" button to appear
+    await waitFor(() => expect(getByText("Update")).toBeTruthy());
 
     // Check if the task is updated
     expect(getByText("New Test Task")).toBeTruthy();
   });
 
-  test("handles deleting a task", () => {
+  test("handles deleting a task", async () => {
     const { getByText, getByPlaceholderText, queryByText } = render(<App />);
 
     // Input a task
@@ -54,6 +60,9 @@ describe("App Component Tests", () => {
     // Press the "Add" button
     const addButton = getByText("Add");
     fireEvent.press(addButton);
+
+    // Wait for the asynchronous fetchTasks to complete
+    await waitFor(() => expect(getByText("New Test Task")).toBeTruthy());
 
     // Delete the task
     const deleteButton = getByText("Delete");
